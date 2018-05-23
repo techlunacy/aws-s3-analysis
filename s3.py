@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import datetime
 import boto3
 
 def list():
@@ -11,13 +12,15 @@ def list():
         bucket_map = {'name': bucket.name,
                     'creation_date': bucket.creation_date, 
                     'object_size': 0, 
-                    'count': 0,} 
+                    'count': 0,
+                    'last_modified_date': datetime.datetime(1,1,1,tzinfo=datetime.timezone.utc)} 
      
         for o in objects:
             bucket_map['count'] = bucket_map['count'] + 1
             # print(o)
-            bucket_map['object_size'] += o['Size'] 
-        
+            bucket_map['object_size'] += o['Size']
+            if bucket_map['last_modified_date'] < o['LastModified']:
+                bucket_map['last_modified_date'] = o['LastModified']
         print("{0}".format(bucket_map))
 
 
