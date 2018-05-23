@@ -11,8 +11,11 @@ def list():
         bucket_map = {'name': bucket.name,
                     'creation_date': bucket.creation_date, 
                     'object_size': 0, 
-                    'size': len(objects),}       
+                    'count': 0,} 
+     
         for o in objects:
+            bucket_map['count'] = bucket_map['count'] + 1
+            # print(o)
             bucket_map['object_size'] += o['Size'] 
         
         print("{0}".format(bucket_map))
@@ -20,17 +23,16 @@ def list():
 
 
 def get_objects(bucket_name, prefix=''):
-    
     client = boto3.client('s3')
     # Create a reusable Paginator
     paginator = client.get_paginator('list_objects_v2')
     operation_parameters = {'Bucket': bucket_name,
                             'Prefix': prefix}
     page_iterator = paginator.paginate(**operation_parameters)
-    objects = []
     for page in page_iterator:
-        objects += page['Contents']
-    return objects
+        for o in page['Contents']:
+            yield o
+
 def configure():
     print('configure')
 
