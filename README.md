@@ -4,5 +4,11 @@ installation:
 configuration: 
 `./s3.py configure`
 
-command: 
-`./s3.py`
+to list all buckets: 
+`./s3.py list >size<`
+
+\>size< is optional but must be one of the following:
+* b
+* kb
+* mb
+* gb
