@@ -62,6 +62,13 @@ def format_bucket(buckets, storage_display_format='gb'):
         bucket['storage'][key] = "{0} {1}".format(round(value/division, 2),storage_display_format)
     return bucket
 
+def group_by_region(buckets):
+    grouped_buckets = defaultdict(list)
+    for bucket in buckets:
+        region = bucket['region']     
+        grouped_buckets[region].append(bucket)
+    return grouped_buckets
+
 def configure():
     print('configure')
 
@@ -71,11 +78,14 @@ if __name__ == "__main__":
     if command == 'list':
         buckets = list()
         for bucket in buckets:
-            if len(sys.argv)>2:
+            if len(sys.argv)>2 and sys.argv[2] != 'group':
                 storage_display_format = sys.argv[2]
                 bucket  = format_bucket(bucket, storage_display_format)
             else:
                 bucket  = format_bucket(bucket)
+            
+        if 'group' in sys.argv:
+            buckets = group_by_region(buckets)
         print("{0}".format(buckets))
     else:
         configure()

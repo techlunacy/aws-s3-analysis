@@ -12,3 +12,6 @@ to list all buckets:
 * kb
 * mb
 * gb
+
+to list all buckets grouped by region: 
+`./s3.py list >size< group`
