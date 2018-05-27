@@ -4,7 +4,7 @@ set -e
 set -x
 
 # ensure SSH agent has all keys
-ssh-add -A
+# ssh-add -A
 
 # set up the infrastructure
 cd terraform

@@ -24,6 +24,35 @@ resource "aws_key_pair" "auth" {
   key_name   = "${var.key_name}"
   public_key = "${file(var.public_key_path)}"
 }
+# Assign instance permissions to list bucket
+resource "aws_iam_role" "ec2_role" {
+  name = "ec2_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }    
+  ]
+}
+EOF
+}
+resource "aws_iam_role_policy_attachment" "s3-read-only-policy-attachment" {
+    role = "${aws_iam_role.ec2_role.name}"
+    policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+}
+
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "ec2_profile"
+  role = "${aws_iam_role.ec2_role.name}"
+}
 
 resource "aws_instance" "web" {
   instance_type = "t2.micro"
@@ -32,6 +61,8 @@ resource "aws_instance" "web" {
 
   # The name of our SSH keypair
   key_name = "${var.key_name}"
+
+  iam_instance_profile = "${aws_iam_instance_profile.ec2_profile.id}"
 
   # Our Security group to allow HTTP and SSH access
   vpc_security_group_ids = ["${aws_security_group.default.id}"]
