@@ -1,9 +1,14 @@
-installation:
+# Installation:
 ```sh
 pip install -r requirements.txt
 ```
 
-to get a bucket: 
+# Testing:
+```sh
+pytest s3_tests.py 
+```
+
+# To get a bucket: 
 ```sh
 ./s3.py get s3://test/ --format >size<
 ```
