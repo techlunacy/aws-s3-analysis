@@ -2,8 +2,6 @@
 - hosts: web
   name: configuration play
   user: ubuntu
-  environment: 
-    LC_ALL: C
 
   gather_facts: false 
   pre_tasks:
@@ -21,6 +19,16 @@
         name: nginx
         update_cache: true
 
+    - name: Copy a new "nginx.conf file into place, backing up the original if it differs from the copied version
+      become: true
+      copy:
+        src: files/nginx.config
+        dest: /etc/nginx/sites-available/default
+        owner: root
+        group: root
+        mode: 0644
+        backup: yes
+
     - name: Install tools
       become: true
       apt:
@@ -29,7 +37,11 @@
         - git
         - python3-pip
         - language-pack-id
-    
+        - build-essential
+        - python3-dev
+        - libssl-dev
+        - libffi-dev
+
     - name: Ensure a locale exists
       become: true
       locale_gen:
@@ -41,6 +53,7 @@
         repo: 'https://gitlab.com/techlunacy/aws-s3-analysis.git'
         dest: "/home/{{ansible_user}}/checkout"
         version: master
+        force: yes
 
     - name: Installing python libraries using requirements file in Ansible
       pip:
@@ -48,3 +61,11 @@
         state: forcereinstall
         chdir: "/home/{{ansible_user}}/checkout"
         executable: pip3
+      environment: 
+        LC_ALL: C        
+
+    - name: start simple http server in background
+      shell: FLASK_APP=web.py nohup flask run </dev/null >/dev/null 2>&1 &    
+      args:
+        chdir: "/home/{{ansible_user}}/checkout"
+       

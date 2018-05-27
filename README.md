@@ -10,19 +10,19 @@ pytest s3_tests.py
 
 # To get a bucket: 
 ```sh
-./s3.py get s3://test/ --format >size<
+./s3.py get s3://test/ --format <sizeformat>
 ```
 
 or to get a sub section of bucket:
 ```sh
-./s3.py get s3://test/subsection* --format >size<
+./s3.py get s3://test/subsection* --format <sizeformat>
 ```
 to list all buckets: 
 ```sh
-./s3.py list --format >size<
+./s3.py list --format <sizeformat>
 ```
 
-\>size< is optional but must be one of the following:
+<sizeformat> is optional but must be one of the following:
 * b
 * kb
 * mb
@@ -30,8 +30,18 @@ to list all buckets:
 
 to list all buckets grouped by region: 
 ```sh
-./s3.py list --format >size< --group
+./s3.py list --format <sizeformat> --group
 ```
+# REST endpoint
+## Start for local testing
+```sh
+FLASK_APP=web.py flask run
+```
+end points:
+/list/<sizeformat>
+/group/<sizeformat>
+/get/<sizeformat>/<bucket_name>/<prefix>
+
 # Terraform+Ansible Deployment
 ## Details
 
