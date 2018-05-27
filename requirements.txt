@@ -1,2 +1,4 @@
 boto3
+moto
+pytest
 ansible~=2.4.4
