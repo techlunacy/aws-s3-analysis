@@ -26,6 +26,13 @@ class S3bucket:
                             self.creation_date.isoformat(), 
                             self.last_modified_date.isoformat())
 
+    def __json__(self):
+        return "{},{},{},{},{},".format(self.name,
+                            self.region,
+                            self.count,
+                            self.creation_date.isoformat(), 
+                            self.last_modified_date.isoformat())
+
     def get_objects(self, prefix):
         return list(self.bucket.objects.filter(Prefix=prefix.replace("*", "")))
 
@@ -43,7 +50,20 @@ class S3bucket:
                             self.creation_date.isoformat(), 
                             self.last_modified_date.isoformat()
                             ,storage_string)
-
+    
+    def formatted_dict(self, bucket_size_format):
+        dictionary = {}
+        storage_dict = {}
+        for k,v in self.storage.items():
+            value = round(v/self.divisor_map(bucket_size_format), 2)
+            storage_dict[k] = "{}{}".format(value, bucket_size_format)
+        dictionary['name'] = str(self.name),
+        dictionary['region'] = str(self.region),
+        dictionary['count'] = self.count,
+        dictionary['creation_date'] = str(self.creation_date.isoformat()), 
+        dictionary['last_modified_date'] = str(self.last_modified_date.isoformat())
+        dictionary['storage'] = storage_dict                            
+        return dictionary
     @staticmethod
     def divisor_map(storage_display_format):
         try:
