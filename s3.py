@@ -69,33 +69,20 @@ class S3bucket:
     def get_bucket(bucket_name, prefix):
         return S3bucket(S3bucket.connection().Bucket(bucket_name), prefix)            
 
-
-# def divisor_map(storage_display_format):
-#     try:
-#         return {'b':1,
-#                 'kb': 1024,
-#                 'mb': 1024 * 1024,
-#                 'gb': 1024 * 1024 * 1024,}[storage_display_format]
-#     except KeyError:
-#         raise ValueError("{0} is not a valid storage_display_format".format(storage_display_format))
-
-# def group_by_region(buckets):
-#     grouped_buckets = defaultdict(list)
-#     for bucket in buckets:
-#         region = bucket['region']     
-#         grouped_buckets[region].append(bucket)
-#     return grouped_buckets
-
-# def configure():
-#     print('configure')
+    @staticmethod
+    def group_by_region(buckets):
+        grouped_buckets = dict()
+        for b in buckets:
+            region = b.region     
+            grouped_buckets.setdefault(region, []).append(b)
+        return grouped_buckets
 
 if __name__ == "__main__":
     command = sys.argv[1]
     list_buckets = []
     bucket_size_format = "gb"
     if command == 'list':
-        for b in S3bucket.get_all_buckets():
-            list_buckets.append(b)
+        list_buckets = S3bucket.get_all_buckets()
     elif command == 'get':
         path = sys.argv[2]
         split_path = path.split('/', 3)
@@ -105,5 +92,11 @@ if __name__ == "__main__":
         index_of_format = sys.argv.index('--format') + 1
         bucket_size_format = sys.argv[index_of_format]
 
-    for b in list_buckets:
-        print(b.format(bucket_size_format))
+    if  '--group' in sys.argv:
+            for region, buckets in S3bucket.group_by_region(list_buckets).items():
+                print(region)
+                for b in buckets:
+                    print(b.format(bucket_size_format))
+    else:
+        for b in list_buckets:
+            print(b.format(bucket_size_format))
