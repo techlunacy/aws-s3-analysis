@@ -2,9 +2,10 @@
 - hosts: web
   name: configuration play
   user: ubuntu
+  environment: 
+    LC_ALL: C
 
-  # https://gist.github.com/gwillem/4ba393dceb55e5ae276a87300f6b8e6f#gistcomment-1914049
-  gather_facts: false
+  gather_facts: false 
   pre_tasks:
     - name: Install python for Ansible
       become: true
@@ -20,11 +21,30 @@
         name: nginx
         update_cache: true
 
-    - name: Install git
+    - name: Install tools
       become: true
       apt:
-        name: git
-- git:
-    repo: 'https://gitlab.com/techlunacy/aws-s3-analysis.git'
-    dest: "/home/{remote_user}/checkout"
-    version: master
+        name: "{{item}}"
+      with_items:
+        - git
+        - python3-pip
+        - language-pack-id
+    
+    - name: Ensure a locale exists
+      become: true
+      locale_gen:
+        name: en_US.UTF-8
+        state: present
+
+    - name: download code
+      git:
+        repo: 'https://gitlab.com/techlunacy/aws-s3-analysis.git'
+        dest: "/home/{{ansible_user}}/checkout"
+        version: master
+
+    - name: Installing python libraries using requirements file in Ansible
+      pip:
+        requirements: requirements.txt
+        state: forcereinstall
+        chdir: "/home/{{ansible_user}}/checkout"
+        executable: pip3

@@ -13,7 +13,7 @@ terraform apply -auto-approve
 
 cd ../ansible
 # pull the instance information from Terraform, and run the Ansible playbook against it to configure
-TF_STATE=../terraform/terraform.tfstate ansible-playbook "--inventory-file=$(which terraform-inventory)" provision.yml
+TF_STATE=../terraform/terraform.tfstate ansible-playbook "--inventory-file=$(which terraform-inventory)" provision.yml -vvv
 
 echo "Success!"
 
