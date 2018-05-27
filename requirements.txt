@@ -1,4 +1,5 @@
 boto3
 moto
 pytest
+pytz
 ansible~=2.4.4
