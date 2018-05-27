@@ -52,7 +52,7 @@ class S3bucket:
             return {'b':1,
                     'kb': 1024,
                     'mb': 1024 * 1024,
-                    'gb': 1024 * 1024 * 1024,}[storage_display_format]
+                    'gb': 1024 * 1024 * 1024,}[storage_display_format.lower()]
         except KeyError:
             raise ValueError("{0} is not a valid storage_display_format".format(storage_display_format))
     
@@ -76,6 +76,9 @@ class S3bucket:
             region = b.region     
             grouped_buckets.setdefault(region, []).append(b)
         return grouped_buckets
+
+# def test_buckets():
+#     assert True 
 
 if __name__ == "__main__":
     command = sys.argv[1]
