@@ -4,3 +4,4 @@ pytest
 pytz
 ansible~=2.4.4
 Flask
+gunicorn
