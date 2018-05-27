@@ -1,8 +1,9 @@
 import boto3
 from moto import mock_s3
 import pytest
-from s3 import S3bucket
 import datetime
+from s3bucket import S3bucket
+
 @mock_s3
 def test_all_buckets_are_returned():
     conn = boto3.resource('s3')
