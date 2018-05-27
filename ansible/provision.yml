@@ -2,6 +2,9 @@
 - hosts: web
   name: configuration play
   user: ubuntu
+  environment: 
+    LC_ALL: C 
+    LANG: C
 
   gather_facts: false 
   pre_tasks:
@@ -60,9 +63,7 @@
         requirements: requirements.txt
         state: forcereinstall
         chdir: "/home/{{ansible_user}}/checkout"
-        executable: pip3
-      environment: 
-        LC_ALL: C        
+        executable: pip3      
 
     - name: start simple http server in background
       shell: FLASK_APP=web.py nohup flask run </dev/null >/dev/null 2>&1 &    
