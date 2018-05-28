@@ -54,8 +54,10 @@ This repository sets up:
 * An SSH key pair
 * A publicly-accessible EC2 instance
 * Within the instance:
-   * Python 2 (for Ansible)
-   * Nginx
+   * Python 
+   * Nginx (port 80)
+   * gunicorn (port 5000)
+   * application (located at /home/ubuntu/checkout)
 
 ## Setup
 
