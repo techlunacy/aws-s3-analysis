@@ -31,8 +31,7 @@
         owner: root
         group: root
         mode: 0644
-        backup: yes
-      notify: Reload nginx        
+        backup: yes        
 
     - name: Install tools
       become: true
